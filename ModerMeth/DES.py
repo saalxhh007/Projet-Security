@@ -90,10 +90,3 @@ class AlgorithmeDES:
         c = self.permute(R + L, self.FP)
 
         return self.ToText(c)
-    
-
-key = "key"
-text = "texte a chiffrer"
-Des = AlgorithmeDES(key, text)
-result = Des.DESAlgorithme()
-print(result)
