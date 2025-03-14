@@ -1,6 +1,8 @@
 import tkinter as tk
-from tkinter import ttk
-
+from tkinter import ttk, messagebox
+import ClassicMeth.PlayFaire as pf
+import ClassicMeth.Vigenere as vg
+import ClassicMeth.TranspositionCol as tc
 class UserInterface:
     def __init__(self, master):
         self.master = master
@@ -28,7 +30,7 @@ class UserInterface:
         self.method_selection.place(y=150)
 
         # Drop Down Menu to Select the Encrypting Method
-        self.drop_down = ttk.Combobox(self.main_left, values=["Caesar Cipher", "Vigenère Cipher", "Transposition Colonne"])
+        self.drop_down = ttk.Combobox(self.main_left, values=["Playfaire", "Vigenère", "Transposition Colonne"])
         self.drop_down.place(x=180, y=155)
 
         # Key Label
@@ -47,8 +49,45 @@ class UserInterface:
 
         # Switching Between Encrypt And Decrypt
         self.decrypt_var = tk.BooleanVar()
-        self.checkbox_decrypt = tk.Checkbutton(self.main_right, text="Decrypt",bg="#949EFF", font=("Helvetica", "8", "bold"))
+        self.checkbox_decrypt = tk.Checkbutton(self.main_right, text="Decrypt",bg="#949EFF", font=("Helvetica", "8", "bold"), variable=self.decrypt_var)
         self.checkbox_decrypt.place(x=0, y=10)
+        
+        execute_button = tk.Button(self.main_right, text="Perform Action", command=self.execute)
+        execute_button.place(x=20, y= 250)
+
+    def execute(self):
+        method = self.drop_down.get()
+        key = self.input_key.get()
+        data = self.input_data.get("1.0", tk.END).strip()
+        result = None
+
+        if self.decrypt_var.get():
+            if method == "Playfaire":
+                methodClass = pf.PlayfairCipher(key, data)
+                result = methodClass.playfaireDecrypt()
+                print()
+            elif method == "Vigenère":
+                methodClass = vg.VigenereCipher(key, data)
+                print()
+                methodClass.vigenereCipherDecrypt()
+            elif method == "Transposition Colonne":
+                methodClass = tc.TranspositionColonne(key, data)
+                result= methodClass.transpositionColonneDecrypt()
+        
+        else:
+            if method == "Playfaire":
+                methodClass = pf.PlayfairCipher(key, data)
+                result = methodClass.playfaireEncrypt()
+            elif method == "Vigenère":
+                methodClass = vg.VigenereCipher(key, data)
+                result = methodClass.vigenereCipherEncrypt()
+            elif method == "Transposition Colonne":
+                methodClass = tc.TranspositionColonne(key, data)
+                result = methodClass.transpositionColonneEncrypt()
+        if result is not None:
+            messagebox.showinfo("Result", result)
+        else:
+            messagebox.showerror("Error", "Please select a valid method and enter the necessary data.")
 
 window = tk.Tk()
 UserInterface(window)
